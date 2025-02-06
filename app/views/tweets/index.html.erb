@@ -1,0 +1,24 @@
+<h1>ScreenSpot</h1>
+<%= button_to 'ログアウト', destroy_user_session_path, method: :delete %>
+<h3>Tweet一覧</h3>
+
+<h3>投稿を検索</h3>
+<%= form_tag({controller:"tweets",action:"index"}, method: :get) do %>
+  <%= text_field_tag :search %>
+  <%= submit_tag '検索する'  %>
+<% end %>
+<%= link_to "新規投稿へ", new_tweet_path %>
+<%= page_entries_info @tweets %>
+<%= paginate @tweets %>
+<div class="tweets-container">
+  <% @tweets.each do |t| %>
+    <div class="tweet">
+  <%= t.user.email %>
+      <%= t.body %>
+      <%= t.created_at %>
+      <%= link_to "詳細へ", tweet_path(t.id) %> 
+      <%= link_to "編集する", edit_tweet_path(t.id) %>
+      <%= link_to "削除する", tweet_path(t.id), method: :delete %>
+    </div>
+  <% end %>
+</div>
