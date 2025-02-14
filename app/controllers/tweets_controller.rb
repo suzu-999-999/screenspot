@@ -3,6 +3,16 @@ class TweetsController < ApplicationController
   def index
    if params[:search] == nil
     @tweets = Tweet.all
+    if params[:tag_ids]
+      @tweets = []
+      params[:tag_ids].each do |key, value|      
+        @tweets += Tag.find_by(name: key).tweets if value == "1"
+      end
+      @tweets.uniq!
+      if params[:tag]
+        Tag.create(name: params[:tag])
+      end
+    end
    elsif params[:search] == ''
     @tweets= Tweet.all
    else
@@ -14,7 +24,9 @@ class TweetsController < ApplicationController
     @tweet = Tweet.new
   end
   def create
+    puts "デバッグ: params = #{params.inspect}"
     tweet = Tweet.new(tweet_params)
+    puts "デバッグ: tweet_params = #{@tweet.inspect}"
     tweet.user_id = current_user.id
     if tweet.save
       redirect_to :action => "index"
@@ -60,6 +72,6 @@ class TweetsController < ApplicationController
 
   private
   def tweet_params
-    params.require(:tweet).permit(:body)
+    params.require(:tweet).permit(:body, :name, :username, :overall, tag_ids: [],)
   end
 end

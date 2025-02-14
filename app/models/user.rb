@@ -5,4 +5,7 @@ class User < ApplicationRecord
         :recoverable, :rememberable, :validatable
   has_many :tweets
   has_many :comments, dependent: :destroy
+  has_many :tweets, dependent: :destroy
+  validates :name, presence: true
+  validates :profile, length: { maximum: 200 }
 end

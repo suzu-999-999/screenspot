@@ -25,6 +25,9 @@
     <% end %>
   <% end %>
 </div>
-
+  <% @tweet.tags.each do |tag| %>
+    <span><%= tag.name %></span>
+  <% end %>
+  
 <%= link_to "Tweet一覧に戻る", tweets_path %>
 <%= link_to "編集する", edit_tweet_path(@tweet.id) %>

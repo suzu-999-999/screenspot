@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   get 'hello/index' => 'hello#index'
   get 'hello/link' => 'hello#link'
   root 'hello#index'
+  resources :users, only: [:show]
   resources :tweets do
     resources :comments, only: [:create]
   end
