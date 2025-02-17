@@ -1,0 +1,9 @@
+<h1>ブックマークしたツイート一覧</h1>
+
+<% if @tweets.present? %>
+    <% @tweets.each do |tweet| %>
+    <%= render 'tweet', tweet: tweet %>
+    <% end %>
+<% else %>
+    <p>まだブックマークしたツイートはありません。</p>
+<% end %>

@@ -27,23 +27,33 @@
   .post_form input[type='radio']:checked ~ label{
     color: #ffcc00;
   }
-  star-rating {
+  .star-rating {
     position: relative;
     display: inline-block;
-    width: 5em;
-    height: 1em;
     font-size: 25px;
-  }
-  .star-rating-front {
-    display: inline-block;
+    width: 100px;
+}
+.star-rating-front {
     position: absolute;
     top: 0;
     left: 0;
     overflow: hidden;
+    white-space: nowrap;
     color: #ffcc33;
-  }
-  .star-rating-back {
-    display: inline-block;
+    width: 0%;
+}
+.star-rating-back {
     color: #ccc;
-    
-  }
+}
+
+
+
+
+
+
+
+
+
+
+
+

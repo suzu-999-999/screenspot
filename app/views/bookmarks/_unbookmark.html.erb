@@ -1,0 +1,7 @@
+<%= link_to tweet_bookmark_path(tweet),
+            method: :delete,
+            remote: true,
+            data: { turbo: "false" },
+            id: "js-bookmark-button-for-tweet-#{tweet.id}" do %>
+    <i class="fa-solid fa-bookmark"></i>
+<% end %>

@@ -14,5 +14,9 @@ Rails.application.routes.draw do
   resources :users, only: [:show]
   resources :tweets do
     resources :comments, only: [:create]
+    resource :bookmark, only: %i[create destroy]
+    collection do
+      get 'bookmarks'
+    end
   end
 end

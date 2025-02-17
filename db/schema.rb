@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_14_120842) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_16_054620) do
+  create_table "bookmarks", force: :cascade do |t|
+    t.integer "tweet_id", null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tweet_id"], name: "index_bookmarks_on_tweet_id"
+    t.index ["user_id"], name: "index_bookmarks_on_user_id"
+  end
+
   create_table "comments", force: :cascade do |t|
     t.string "content"
     t.integer "user_id", null: false
@@ -64,6 +73,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_14_120842) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "bookmarks", "tweets"
+  add_foreign_key "bookmarks", "users"
   add_foreign_key "comments", "tweets"
   add_foreign_key "comments", "users"
   add_foreign_key "tweet_tag_relations", "tags"

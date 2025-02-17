@@ -70,6 +70,10 @@ class TweetsController < ApplicationController
     redirect_to action: :index
   end
 
+  def bookmarks
+    @tweets = current_user.bookmark_tweets
+  end
+
   private
   def tweet_params
     params.require(:tweet).permit(:body, :name, :username, :overall, tag_ids: [],)
