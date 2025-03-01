@@ -1,25 +1,26 @@
 class TweetsController < ApplicationController
   before_action :authenticate_user!
-  def index
-   if params[:search] == nil
-    @tweets = Tweet.all
-    if params[:tag_ids]
-      @tweets = []
-      params[:tag_ids].each do |key, value|      
-        @tweets += Tag.find_by(name: key).tweets if value == "1"
+  
+    def index
+      @tweets = Tweet.all
+    
+      # キーワード検索
+      if params[:search].present?
+        @tweets = @tweets.where("body LIKE ?", "%#{params[:search]}%")
       end
-      @tweets.uniq!
-      if params[:tag]
-        Tag.create(name: params[:tag])
+    
+      # タグ検索 (OR検索)
+      if params[:tag_ids]
+        selected_tag_names = params[:tag_ids].select { |_, v| v == "1" }.keys
+        if selected_tag_names.any?
+          @tweets = @tweets.joins(:tags).where(tags: { name: selected_tag_names }).distinct
+        end
       end
+    
+      @tweets = @tweets.page(params[:page]).per(3)
     end
-   elsif params[:search] == ''
-    @tweets= Tweet.all
-   else
-    @tweets = Tweet.where("body LIKE ? ",'%' + params[:search] + '%')
-   end
-   @tweets = Tweet.page(params[:page]).per(3)
-  end
+    
+  
   def new
     @tweet = Tweet.new
   end
@@ -36,6 +37,7 @@ class TweetsController < ApplicationController
   end
   def show
     @tweet = Tweet.find(params[:id])
+    
   end
   def edit
     @tweet = Tweet.find(params[:id])
@@ -48,22 +50,7 @@ class TweetsController < ApplicationController
       redirect_to :action => "new"
     end
   end
-  def show
-    @tweet = Tweet.find(params[:id])
-    @comments = @tweet.comments
-    @comment = Comment.new
-  end
-  def edit
-    @tweet = Tweet.find(params[:id])
-  end
-  def update
-    tweet = Tweet.find(params[:id])
-    if tweet.update(tweet_params)
-      redirect_to :action => "show", :id => tweet.id
-    else
-      redirect_to :action => "new"
-    end
-  end
+
   def destroy
     tweet = Tweet.find(params[:id])
     tweet.destroy

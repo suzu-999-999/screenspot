@@ -1,6 +1,5 @@
-<h1>ScreenSpot</h1>
+
 <%= button_to 'ログアウト', destroy_user_session_path, method: :delete %>
-<h3>Tweet一覧</h3>
 
 <h3>投稿を検索</h3>
 <%= form_tag({controller:"tweets",action:"index"}, method: :get) do %>
@@ -9,16 +8,18 @@
 <% end %>
 <%= link_to "新規投稿へ", new_tweet_path %>
 <%= page_entries_info @tweets %>
-<%= paginate @tweets %>
+<%= paginate @tweets, params: { search: params[:search], tag_ids: params[:tag_ids] } %>
 <div class="tweets-container">
   <% if user_signed_in? %>
   <%= link_to "マイページへ", user_path(current_user.id) %>
 <% end %>
+<h3>Tweet一覧</h3>
   <% @tweets.each do |t| %>
     <div class="tweet">
   <%= link_to t.user.name, user_path(t.user.id) %>
   <%= t.user.email %>
       <%= t.body %>
+      <%= render 'tweet', tweet: t %> 
       
       <%= t.created_at %>
       <div>
@@ -29,7 +30,7 @@
         </span> 
         </h2>
       </div>
-      <%= link_to "詳細へ", tweet_path(t.id) %> 
+      
       <% if user_signed_in? && current_user.id == t.user_id %>
       <%= link_to "編集する", edit_tweet_path(t.id) %>
       <%= link_to "削除する", tweet_path(t.id), method: :delete %>
@@ -38,10 +39,6 @@
     <% Tag.all.each do |t| %>
         <li><%= check_box :tag_ids, t.name %><%= t.name %></li>
     <% end %>
-    <%= form_tag({controller:"tweets",action:"index"}, method: :get) do %>
-    <%= text_field_tag :tag %>
-    <%= submit_tag 'タグを追加' %>
-<% end %>
     <%= submit_tag '検索' %>
     
 <% end %>

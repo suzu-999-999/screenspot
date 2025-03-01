@@ -12,8 +12,8 @@ Rails.application.routes.draw do
   get 'hello/link' => 'hello#link'
   root 'hello#index'
   resources :users, only: [:show]
-  resources :tweets do
-    resources :comments, only: [:create]
+  resources :tweets do 
+    
     resource :bookmark, only: %i[create destroy]
     collection do
       get 'bookmarks'

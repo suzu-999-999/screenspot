@@ -6,11 +6,20 @@
 <% if current_user.id == @user.id %>
   <%= link_to "編集する", edit_user_registration_path %>
 <% end %>
+<%= link_to "Tweet一覧に戻る", tweets_path %>
 
-<h2>ユーザーの投稿一覧</h2>
+<h3>ユーザーの投稿一覧</h3>
 <% @user.tweets.each do |t| %>
   <%= t.user.name %>
   <%= t.body %>
 <% end %>
 
-<%= link_to "Tweet一覧に戻る", tweets_path %>
+
+<h3>ブックマークした投稿一覧</h3>
+<% if @user.bookmark_tweets.any? %>
+  <% @user.bookmark_tweets.each do |tweet| %>
+    <%= render 'tweets/tweet', tweet: tweet%>
+  <% end %>
+<% else %>
+  <p>まだブックマークしたツイートはありません。</p>
+<% end %>

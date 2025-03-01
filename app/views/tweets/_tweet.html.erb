@@ -1,6 +1,11 @@
 <div class="tweet">
     <% if user_signed_in? %>
     <p><%= tweet.body %></p>
+    <% if tweet.tags.present? %>
+<% tweet.tags.each do |tag| %>
+    <span><%= tag.name %></span>
+  <% end %>
+  <% end %>
     <% if current_user.bookmark?(tweet) %>
         <%= render 'bookmarks/unbookmark', tweet: tweet %>
     <% else %>
