@@ -1,3 +1,4 @@
+<%= stylesheet_link_tag 'index', :media => "all" %>
 
 <%= button_to 'ログアウト', destroy_user_session_path, method: :delete %>
 
@@ -13,10 +14,28 @@
   <% if user_signed_in? %>
   <%= link_to "マイページへ", user_path(current_user.id) %>
 <% end %>
+
 <h3>Tweet一覧</h3>
   <% @tweets.each do |t| %>
     <div class="tweet">
-  <%= link_to t.user.name, user_path(t.user.id) %>
+      <div class="main-box">
+        <div class="left-container"><%= t.body %></div>
+        <div class="right-container">
+          <%= link_to "詳細", tweet_path(t.id) %>
+          <%= link_to "編集", edit_tweet_path(t.id) %>
+          <%= link_to "削除", tweet_path(t.id), method: :delete %>
+        </div>
+      </div>
+        <p class="time"><%= t.created_at %></p>
+    </div>
+  <% end %>
+</div>
+
+<% if t.user.present? && t.user.id.present? %>
+  <%= link_to (t.user.name.presence || "名無しユーザー"), polymorphic_path(t.user) %>
+<% else %>
+  <p>ユーザー情報がありません</p>
+<% end %>
   <%= t.user.email %>
       <%= t.body %>
       <%= render 'tweet', tweet: t %> 
@@ -44,5 +63,4 @@
 <% end %>
 
     </div>
-  <% end %>
-</div>
+
