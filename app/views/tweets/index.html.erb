@@ -1,66 +1,59 @@
-<%= stylesheet_link_tag 'index', :media => "all" %>
+<%= stylesheet_link_tag 'index', media: "all" %>
 
 <%= button_to 'ログアウト', destroy_user_session_path, method: :delete %>
 
 <h3>投稿を検索</h3>
-<%= form_tag({controller:"tweets",action:"index"}, method: :get) do %>
-  <%= text_field_tag :search %>
-  <%= submit_tag '検索する'  %>
-<% end %>
-<%= link_to "新規投稿へ", new_tweet_path %>
-<%= page_entries_info @tweets %>
-<%= paginate @tweets, params: { search: params[:search], tag_ids: params[:tag_ids] } %>
-<div class="tweets-container">
-  <% if user_signed_in? %>
-  <%= link_to "マイページへ", user_path(current_user.id) %>
+<%= form_with url: tweets_path, method: :get, local: true do %>
+  <%= text_field_tag :search, params[:search] %>
+  <%= submit_tag '検索する' %>
 <% end %>
 
-<h3>Tweet一覧</h3>
+<%= link_to "新規投稿へ", new_tweet_path %>
+
+<%= page_entries_info @tweets %>
+<%= paginate @tweets, params: { search: params[:search], tag_ids: params[:tag_ids] } %>
+
+<div class="tweets-container">
+  <% if user_signed_in? %>
+    <%= link_to "マイページへ", user_path(current_user) %>
+  <% end %>
+
   <% @tweets.each do |t| %>
     <div class="tweet">
       <div class="main-box">
-        <div class="left-container"><%= t.body %></div>
+        <div class="left-container">
+          <%= t.body %>
+          <%= t.title %>
+        </div>
         <div class="right-container">
-          <%= link_to "詳細", tweet_path(t.id) %>
-          <%= link_to "編集", edit_tweet_path(t.id) %>
-          <%= link_to "削除", tweet_path(t.id), method: :delete %>
+          <%= link_to "詳細", tweet_path(t) %>
+          <%= link_to "編集", edit_tweet_path(t) if user_signed_in? && current_user.id == t.user_id %>
+          <%= link_to "削除", tweet_path(t), method: :delete if user_signed_in? && current_user.id == t.user_id %>
         </div>
       </div>
-        <p class="time"><%= t.created_at %></p>
+      <p class="time"><%= t.created_at %></p>
+
+      <p>投稿者: <%= t.user&.name || "名無しユーザー" %></p>
+      <p>Email: <%= t.user&.email || "メール情報なし" %></p>
+
+      <div>
+        <h2>総合評価：
+          <span class="star-rating">
+            <span class="star-rating-front" style="width: <%= get_percent(t.overall) %>%;"></span>
+            <span class="star-rating-back">★★★★★</span>
+          </span>
+        </h2>
+      </div>
+
+      <%= render 'tweet', tweet: t %>
     </div>
   <% end %>
 </div>
 
-<% if t.user.present? && t.user.id.present? %>
-  <%= link_to (t.user.name.presence || "名無しユーザー"), polymorphic_path(t.user) %>
-<% else %>
-  <p>ユーザー情報がありません</p>
+<h3>タグ検索</h3>
+<%= form_with url: tweets_path, method: :get, local: true do %>
+  <% Tag.all.each do |tag| %>
+    <li><%= check_box_tag "tag_ids[]", tag.id %> <%= tag.name %></li>
+  <% end %>
+  <%= submit_tag '検索' %>
 <% end %>
-  <%= t.user.email %>
-      <%= t.body %>
-      <%= render 'tweet', tweet: t %> 
-      
-      <%= t.created_at %>
-      <div>
-        <h2>総合評価：
-        <span class="star-rating">
-        <span class="star-rating-front" style="width: <%= getPercent(t.overall) %>%;">★★★★★</span>
-        <span class="star-rating-back">★★★★★</span>
-        </span> 
-        </h2>
-      </div>
-      
-      <% if user_signed_in? && current_user.id == t.user_id %>
-      <%= link_to "編集する", edit_tweet_path(t.id) %>
-      <%= link_to "削除する", tweet_path(t.id), method: :delete %>
-    <% end %>
-    <%= form_tag({controller:"tweets",action:"index"}, method: :get) do %>
-    <% Tag.all.each do |t| %>
-        <li><%= check_box :tag_ids, t.name %><%= t.name %></li>
-    <% end %>
-    <%= submit_tag '検索' %>
-    
-<% end %>
-
-    </div>
-

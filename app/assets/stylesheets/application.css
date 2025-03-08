@@ -26,7 +26,11 @@ body {
     flex-direction: column;
 }
 header {
-    background-color: #00acee;
+    position: fixed;
+    top: 0; 
+    left: 0;
+    width: 100%;
+    background-color: #000000;
     height: 80px;
     font-weight: bold;
     display: flex;
@@ -62,4 +66,21 @@ footer {
     align-items: center;
     position: fixed;
     justify-content: flex-end;
+}
+#second-block {
+    background-color: #c6c6be;
+    text-align: center;
+    padding-top: 100px;
+    padding-bottom: 100pc;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.item {
+    width: 200px;
+    padding: 20px;
+    margin: 10px 0;
+    text-align: center;
 }

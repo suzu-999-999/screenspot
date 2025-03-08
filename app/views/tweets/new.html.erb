@@ -1,4 +1,5 @@
-<h1>ScreenSpot</h1>
+<%= stylesheet_link_tag 'new', :media => "all" %>
+<div class='container'>
 <h3>新規Tweet</h3>
 <%= form_for @tweet, url: tweets_path, method: :post do |f| %>
 <div class='form-group'>
@@ -12,8 +13,10 @@
         <% end %>
     </div>
   <div class="field">
-    <%= f.label :body %>
-    <%= f.text_field :body, :size => 140 %>
+    <div class='item'><%= f.label :title %></div>
+    <%= f.text_field :title, :size => 40 %>
+    <div class='item'><%= f.label :body %></div>
+    <%= f.text_area :body, :size => "50x10" %>
   </div>
   <h5>総合評価</h5>
   <div class="post_form">
@@ -35,3 +38,4 @@
   <%= f.submit "Tweetする" %>
 <% end %>
 <%= link_to "Tweet一覧に戻る", tweets_path %>
+</div>
