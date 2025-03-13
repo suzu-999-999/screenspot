@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
   <section id="second-block">
-  <head>
-    <title>Screenspot</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
+    <head>
+      <title>Screenspot</title>
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     
     <script src="https://kit.fontawesome.com/3e8b362a6f.js" crossorigin="anonymous"></script>
@@ -18,8 +18,15 @@
       <h1>ScreenSpot</h1>
       <div class="header-list">
       <ul>
-        <li><%= link_to "ホーム", tweets_path %></li>
-        <li><%= link_to "新規投稿",new_tweet_path %></li>
+        <li><%= link_to tweets_path do %>
+          <i class="fa fa-home"></i>
+        <% end %></li>
+        <li><%= link_to new_tweet_path do %>
+          <i class="fa-solid fa-pen"></i>
+        <% end %></li>
+        <li><%= link_to destroy_user_session_path, method: :delete, class: "logout-link" do %>
+          <i class="fas fa-sign-out-alt"></i>
+        <% end %></li>
       </ul>
       </div>
     </header>
@@ -29,5 +36,5 @@
     <footer>
       <p>Copyright © GeekSalon All Rights Reserved.</p>
   </body>
-</html>
+  </html>
   </section>

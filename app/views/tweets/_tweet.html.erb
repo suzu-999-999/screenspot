@@ -1,15 +1,28 @@
+<%= stylesheet_link_tag 'index', media: "all" %>
 <div class="tweet">
     <% if user_signed_in? %>
-    <p><%= tweet.body %></p>
-    <% if tweet.tags.present? %>
-<% tweet.tags.each do |tag| %>
-    <span><%= tag.name %></span>
-  <% end %>
-  <% end %>
-    <% if current_user.bookmark?(tweet) %>
-        <%= render 'bookmarks/unbookmark', tweet: tweet %>
-    <% else %>
-        <%= render 'bookmarks/bookmark', tweet: tweet %>
-    <% end %>
+        <% if local_assigns[:show_title] %>
+            <p><%= tweet.title %></p>
+        <% end %>
+
+        <% unless local_assigns[:bookmark_only] %>
+            <% if tweet.tags.present? %>
+                <div class="tags">
+                    <% tweet.tags.each do |tag| %>
+                        <span class="tag"><%= tag.name %></span>
+                    <% end %>
+                </div> 
+            <% end %>
+        <% end %>
+
+        <% if local_assigns[:bookmark_only] %>
+            <div class="bookmark-icon">
+                <% if current_user.bookmark?(tweet) %>
+                    <%= render 'bookmarks/unbookmark', tweet: tweet %>
+                <% else %>
+                    <%= render 'bookmarks/bookmark', tweet: tweet %>
+                <% end %>
+            </div>
+        <% end %>
     <% end %>
 </div>

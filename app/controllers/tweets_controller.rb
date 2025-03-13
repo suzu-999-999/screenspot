@@ -10,12 +10,8 @@ class TweetsController < ApplicationController
       end
     
       # タグ検索 (OR検索)
-      if params[:tag_ids]
-        selected_tag_names = params[:tag_ids].select { |_, v| v == "1" }.keys
-        if selected_tag_names.any?
-          @tweets = @tweets.joins(:tags).where(tags: { name: selected_tag_names }).distinct
-        end
-      end
+      @tweets = params[:tag_id].present? ? Tag.find(params[:tag_id]).tweets : Tweet.all
+
     
       @tweets = @tweets.page(params[:page]).per(3)
     end
@@ -64,5 +60,8 @@ class TweetsController < ApplicationController
   private
   def tweet_params
     params.require(:tweet).permit(:body, :title, :name, :username, :overall, tag_ids: [],)
+  end
+  def tweet_params
+    params.require(:tweet).permit(:body, :title, tag_ids: [])
   end
 end

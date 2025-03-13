@@ -1,25 +1,47 @@
-<h1>users#show</h1>
-<p>名前 : <%= @user.name %></p>
-<p>メールアドレス : <%= @user.email %></p>
-<p>プロフィール : <%= @user.profile %></p>
+<%= stylesheet_link_tag 'users', media: "all" %>
+<body>
+  <main>
+    <h2><i class="fa-solid fa-circle-user"></i>&nbsp;マイページ</h2>
+    <section class="user-info">
+      <h3>ユーザー情報</h3>
+      <div class="user-details">
+        <p>名前 : <%= @user.name %></p>
+        <p>メールアドレス : <%= @user.email %></p>
+        <p>プロフィール : <%= @user.profile %></p>
+      </div>
+      <div class="edit-link">
+        <%= link_to edit_user_registration_path, class: "edit-btn" do %>
+          <i class="fas fa-edit"></i> 編集する
+        <% end %>
+      </div>
+    </section>
 
 <% if current_user.id == @user.id %>
-  <%= link_to "編集する", edit_user_registration_path %>
-<% end %>
-<%= link_to "Tweet一覧に戻る", tweets_path %>
-
-<h3>ユーザーの投稿一覧</h3>
-<% @user.tweets.each do |t| %>
-  <%= t.user.name %>
-  <%= t.body %>
 <% end %>
 
+    <section class="bookmarks">
+      <h3>ブックマークした作品</h3>
+      <% if @user.bookmark_tweets.any? %>
+        <% @user.bookmark_tweets.each do |tweet| %>
+          <%= render 'tweets/tweet', tweet: tweet, show_title: true %>
+        <% end %>
+      <% else %>
+        <p>まだブックマークしたツイートはありません。</p>
+      <% end %>
+    </section>
 
-<h3>ブックマークした投稿一覧</h3>
-<% if @user.bookmark_tweets.any? %>
-  <% @user.bookmark_tweets.each do |tweet| %>
-    <%= render 'tweets/tweet', tweet: tweet%>
-  <% end %>
-<% else %>
-  <p>まだブックマークしたツイートはありません。</p>
-<% end %>
+    <section class="posts">
+      <h3>過去の投稿</h3>
+      <div class="postbox">
+        <% @user.tweets.each do |t| %>
+          <div class="postbox-item">
+            <p class="post-title"><%= t.title %></p>
+          </div>
+        <% end %>
+      </div>
+    </section>
+
+    <%= link_to "投稿一覧に戻る", tweets_path, class: "back-link" %>
+
+  </main>
+</body>

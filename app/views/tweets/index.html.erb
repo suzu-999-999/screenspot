@@ -1,59 +1,73 @@
 <%= stylesheet_link_tag 'index', media: "all" %>
 
-<%= button_to 'ログアウト', destroy_user_session_path, method: :delete %>
+  <% if user_signed_in? %>
+    <%= link_to user_path(current_user) do %>
+      <i class="fa-solid fa-circle-user"></i>
+    <% end %>
+  <% end %>
+    
+<div class="search-box">
+  <%= form_with url: tweets_path, method: :get, local: true do %>
+    <%= text_field_tag :search, params[:search] %>
+    <%= submit_tag '検索' %>
+  <% end %>
+</div>
 
-<h3>投稿を検索</h3>
-<%= form_with url: tweets_path, method: :get, local: true do %>
-  <%= text_field_tag :search, params[:search] %>
-  <%= submit_tag '検索する' %>
-<% end %>
-
-<%= link_to "新規投稿へ", new_tweet_path %>
-
-<%= page_entries_info @tweets %>
-<%= paginate @tweets, params: { search: params[:search], tag_ids: params[:tag_ids] } %>
+<div class="pagination-container">
+  <%= page_entries_info @tweets %>
+  <div class="pagination-links">
+    <%= paginate @tweets, params: { search: params[:search], tag_ids: params[:tag_ids] } %>
+  </div>
+</div>
 
 <div class="tweets-container">
-  <% if user_signed_in? %>
-    <%= link_to "マイページへ", user_path(current_user) %>
-  <% end %>
-
   <% @tweets.each do |t| %>
     <div class="tweet">
       <div class="main-box">
-        <div class="left-container">
-          <%= t.body %>
-          <%= t.title %>
-        </div>
-        <div class="right-container">
-          <%= link_to "詳細", tweet_path(t) %>
-          <%= link_to "編集", edit_tweet_path(t) if user_signed_in? && current_user.id == t.user_id %>
-          <%= link_to "削除", tweet_path(t), method: :delete if user_signed_in? && current_user.id == t.user_id %>
-        </div>
+        <div class="title-actions-container">
+          <%= render 'tweet', tweet: t, bookmark_only: true %>
+          <div class="title">
+            <%= t.title %>
+          </div>
+          <div class="left-container">
+            <h3>総合評価：
+              <span class="star-rating">
+                <span class="star-rating-front" style="width: <%= get_percent(t.overall) %>%; overflow: hidden;">★★★★★</span>
+                <span class="star-rating-back">★★★★★</span>
+              </span>
+            </h3>
+            <%= render 'tweet', tweet: t %>
+            <%= t.body %>
+            <p>投稿者: <%= t.user&.name || "名無しユーザー" %></p>
+            <p>Email: <%= t.user&.email || "メール情報なし" %></p>
+            
+            <%= link_to "詳細", tweet_path(t), class: "btn-detail" %>
+            <% if user_signed_in? && current_user.id == t.user_id %>
+              <%= link_to edit_tweet_path(t), class: "btn-edit" do %>
+                <i class="fa-solid fa-pen-to-square"></i>
+              <% end %>
+              <%= link_to tweet_path(t), method: :delete, class: "btn-delete" do %>
+                <i class="fa-solid fa-trash"></i>
+              <% end %>
+            <% end %>
+            <p class="time"><%= t.created_at %></p>
+          </div>
+        </div> 
       </div>
-      <p class="time"><%= t.created_at %></p>
-
-      <p>投稿者: <%= t.user&.name || "名無しユーザー" %></p>
-      <p>Email: <%= t.user&.email || "メール情報なし" %></p>
-
-      <div>
-        <h2>総合評価：
-          <span class="star-rating">
-            <span class="star-rating-front" style="width: <%= get_percent(t.overall) %>%;"></span>
-            <span class="star-rating-back">★★★★★</span>
-          </span>
-        </h2>
-      </div>
-
-      <%= render 'tweet', tweet: t %>
     </div>
   <% end %>
 </div>
 
-<h3>タグ検索</h3>
-<%= form_with url: tweets_path, method: :get, local: true do %>
-  <% Tag.all.each do |tag| %>
-    <li><%= check_box_tag "tag_ids[]", tag.id %> <%= tag.name %></li>
-  <% end %>
-  <%= submit_tag '検索' %>
-<% end %>
+<div class="tag-container">
+  <h3>ジャンル検索</h3>
+  <%= form_tag tweets_path, method: :get, class: 'boards__searchForm' do %>
+  
+      <%= select_tag :tag_id,
+        options_from_collection_for_select(Tag.all, :id, :name, params[:tag_id]),
+        {
+        prompt: 'タグで絞り込み検索',
+        onchange: 'submit(this.form);'
+        }
+      %>
+  <% end %>    
+</div>

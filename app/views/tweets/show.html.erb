@@ -1,10 +1,15 @@
 
-<h3>Tweet詳細</h3>
+<h3>投稿詳細</h3>
 <div class="tweet">
-  <p><%= @tweet.body %></p>
   <p><%= @tweet.title %></p>
+  <p><%= @tweet.body %></p>
   <p><%= @tweet.created_at %></p>
 </div>
+<% @tweet.tags.each do |tag| %>
+    <%= tag.name %>
+<% end %>
 
-<%= link_to "Tweet一覧に戻る", tweets_path %>
-<%= link_to "編集する", edit_tweet_path(@tweet.id) %>
+<%= link_to "投稿一覧に戻る", tweets_path %>
+<% if user_signed_in? && current_user.id == @tweet.user_id %>
+  <%= link_to "編集する", edit_tweet_path(@tweet.id) %>
+<% end %> 
